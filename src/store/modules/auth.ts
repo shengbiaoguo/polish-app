@@ -1,11 +1,20 @@
 import { create } from 'zustand'
 
-import { clearToken, getToken, setToken } from '@/utils/auth'
+import {
+  clearToken,
+  getToken,
+  setToken,
+  getUserInfo,
+  setUserInfo,
+  clearUserInfo,
+} from '@/utils/auth'
+import { UserRole } from '@/constants/permission'
 
 export interface UserInfo {
   id: string
   username: string
   nickname: string
+  role: UserRole
 }
 
 interface AuthState {
@@ -17,15 +26,17 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>((set) => ({
   token: getToken() ?? '',
-  userInfo: null,
+  userInfo: getUserInfo(),
 
   setLogin: ({ token, userInfo }) => {
     setToken(token)
+    setUserInfo(userInfo)
     set({ token, userInfo })
   },
 
   logout: () => {
     clearToken()
+    clearUserInfo()
     set({ token: '', userInfo: null })
   },
 }))

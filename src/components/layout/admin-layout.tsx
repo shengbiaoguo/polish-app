@@ -3,22 +3,16 @@ import { Outlet, useLocation } from 'react-router-dom'
 
 import { AdminHeader } from './admin-header'
 import { AdminSider } from './admin-sider'
+import { adminRouteConfigs } from '@/app/router/route-config'
 
 const { Content } = Layout
-
-const breadcrumbNameMap: Record<string, string> = {
-  '/dashboard': '仪表盘',
-  '/user': '用户管理',
-  '/role': '角色管理',
-}
 
 export const AdminLayout = () => {
   const location = useLocation()
 
-  const breadcrumbItems = [
-    { title: '首页' },
-    { title: breadcrumbNameMap[location.pathname] ?? '页面' },
-  ]
+  const currentRoute = adminRouteConfigs.find((route) => route.path === location.pathname)
+
+  const breadcrumbItems = [{ title: '首页' }, { title: currentRoute?.meta.title ?? '页面' }]
 
   return (
     <Layout className="admin-layout">

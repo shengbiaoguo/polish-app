@@ -1,14 +1,17 @@
 import type { ReactNode } from 'react'
+import type { UserRole } from '@/constants/permission'
 
-export interface RouteMeta {
+export interface AppRouteMeta {
   title: string
   requiresAuth?: boolean
   hideInMenu?: boolean
+  roles?: UserRole[]
+  icon?: ReactNode
 }
 
-export interface MenuItem {
-  key: string
-  label: string
+export interface AppRouteConfig {
   path: string
-  icon?: ReactNode
+  element: ReactNode
+  meta: AppRouteMeta
+  children?: AppRouteConfig[]
 }

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { useAuthStore } from '@/store'
 import type { LoginParams } from '@/types/auth'
+import { UserRole } from '@/constants/permission'
 
 const LoginPage = () => {
   const navigate = useNavigate()
@@ -11,13 +12,22 @@ const LoginPage = () => {
 
   const onFinish: FormProps<LoginParams>['onFinish'] = async (values) => {
     try {
-      // 这里后面可以替换成真实接口
+      const roleMap: Record<string, UserRole> = {
+        super: UserRole.SUPER_ADMIN,
+        admin: UserRole.ADMIN,
+        operator: UserRole.OPERATOR,
+        viewer: UserRole.VIEWER,
+      }
+
+      const currentRole = roleMap[values.username] ?? UserRole.VIEWER
+
       const mockResponse = {
         token: 'mock_admin_token',
         userInfo: {
           id: '1',
           username: values.username,
           nickname: '系统管理员',
+          role: currentRole,
         },
       }
 

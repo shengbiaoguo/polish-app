@@ -1,33 +1,27 @@
-import { DesktopOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons'
 import { Layout, Menu } from 'antd'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import { useAppStore } from '@/store'
+import { useAppStore, useAuthStore } from '@/store'
+import { adminRouteConfigs } from '@/app/router/route-config'
+import { filterRoutesByRole } from '@/utils/permission'
 
 const { Sider } = Layout
-
-const menuItems = [
-  {
-    key: '/dashboard',
-    icon: <DesktopOutlined />,
-    label: '仪表盘',
-  },
-  {
-    key: '/user',
-    icon: <UserOutlined />,
-    label: '用户管理',
-  },
-  {
-    key: '/role',
-    icon: <TeamOutlined />,
-    label: '角色管理',
-  },
-]
 
 export const AdminSider = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const { siderCollapsed } = useAppStore()
+  const userRole = useAuthStore((state) => state.userInfo?.role)
+
+  const menuRoutes = filterRoutesByRole(adminRouteConfigs, userRole).filter(
+    (route) => !route.meta.hideInMenu,
+  )
+
+  const menuItems = menuRoutes.map((route) => ({
+    key: route.path,
+    icon: route.meta.icon,
+    label: route.meta.title,
+  }))
 
   return (
     <Sider trigger={null} collapsible collapsed={siderCollapsed} width={220}>
