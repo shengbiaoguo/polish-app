@@ -1,18 +1,42 @@
 import { Breadcrumb, Layout } from 'antd'
 import { Outlet, useLocation } from 'react-router-dom'
 
+import { adminRouteConfigs } from '@/app/router/route-config'
+import type { AppRouteConfig } from '@/types/route'
 import { AdminHeader } from './admin-header'
 import { AdminSider } from './admin-sider'
-import { adminRouteConfigs } from '@/app/router/route-config'
 
 const { Content } = Layout
+
+const findBreadcrumbs = (
+  routes: AppRouteConfig[],
+  pathname: string,
+  parents: { title: string }[] = [],
+): { title: string }[] => {
+  for (const route of routes) {
+    const current = [...parents, { title: route.meta.title }]
+
+    if (route.path === pathname) {
+      return current
+    }
+
+    if (route.children?.length) {
+      const result = findBreadcrumbs(route.children, pathname, current)
+      if (result.length) {
+        return result
+      }
+    }
+  }
+
+  return []
+}
 
 export const AdminLayout = () => {
   const location = useLocation()
 
-  const currentRoute = adminRouteConfigs.find((route) => route.path === location.pathname)
+  const routeBreadcrumbs = findBreadcrumbs(adminRouteConfigs, location.pathname)
 
-  const breadcrumbItems = [{ title: '首页' }, { title: currentRoute?.meta.title ?? '页面' }]
+  const breadcrumbItems = [{ title: '首页' }, ...routeBreadcrumbs]
 
   return (
     <Layout className="admin-layout">

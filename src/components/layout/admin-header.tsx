@@ -2,12 +2,15 @@ import { LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-desig
 import { Avatar, Dropdown, Layout, Space, Typography } from 'antd'
 import type { MenuProps } from 'antd'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import LanguageSwitch from './language-switch'
 
 import { useAppStore, useAuthStore } from '@/store'
 
 const { Header } = Layout
 
 export const AdminHeader = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { siderCollapsed, toggleSider } = useAppStore()
   const { userInfo, logout } = useAuthStore()
@@ -16,7 +19,7 @@ export const AdminHeader = () => {
     {
       key: 'logout',
       icon: <LogoutOutlined />,
-      label: '退出登录',
+      label: t('common.logout'),
     },
   ]
 
@@ -38,12 +41,16 @@ export const AdminHeader = () => {
       </div>
 
       <div className="admin-header__right">
-        <Dropdown menu={{ items, onClick: handleMenuClick }}>
-          <Space className="admin-header__user">
-            <Avatar size="small">{userInfo?.nickname?.[0] ?? 'A'}</Avatar>
-            <Typography.Text>{userInfo?.nickname ?? '管理员'}</Typography.Text>
-          </Space>
-        </Dropdown>
+        <Space size={16}>
+          <LanguageSwitch />
+
+          <Dropdown menu={{ items, onClick: handleMenuClick }}>
+            <Space className="admin-header__user">
+              <Avatar size="small">{userInfo?.nickname?.[0] ?? 'A'}</Avatar>
+              <Typography.Text>{userInfo?.nickname ?? 'Admin'}</Typography.Text>
+            </Space>
+          </Dropdown>
+        </Space>
       </div>
     </Header>
   )

@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import type { UserRole } from '@/constants/permission'
 
 export interface AppRouteMeta {
-  title: string
+  titleKey: string
   requiresAuth?: boolean
   hideInMenu?: boolean
   roles?: UserRole[]

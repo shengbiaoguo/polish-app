@@ -19,5 +19,10 @@ export const filterRoutesByRole = (
   routes: AppRouteConfig[],
   userRole: UserRole | undefined,
 ): AppRouteConfig[] => {
-  return routes.filter((route) => hasRoutePermission(userRole, route))
+  return routes
+    .filter((route) => hasRoutePermission(userRole, route))
+    .map((route) => ({
+      ...route,
+      children: route.children ? filterRoutesByRole(route.children, userRole) : undefined,
+    }))
 }

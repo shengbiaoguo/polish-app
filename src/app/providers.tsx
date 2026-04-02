@@ -1,7 +1,9 @@
-import { type PropsWithChildren, useState } from 'react'
+import { type PropsWithChildren, useMemo, useState } from 'react'
 import { App as AntdApp, ConfigProvider, theme } from 'antd'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import enUS from 'antd/locale/en_US'
 import zhCN from 'antd/locale/zh_CN'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 
 export const AppProviders = ({ children }: PropsWithChildren) => {
   const [queryClient] = useState(
@@ -19,10 +21,16 @@ export const AppProviders = ({ children }: PropsWithChildren) => {
       }),
   )
 
+  const { i18n } = useTranslation()
+
+  const antdLocale = useMemo(() => {
+    return i18n.language === 'en-US' ? enUS : zhCN
+  }, [i18n.language])
+
   return (
     <QueryClientProvider client={queryClient}>
       <ConfigProvider
-        locale={zhCN}
+        locale={antdLocale}
         theme={{
           algorithm: theme.defaultAlgorithm,
           token: {
